@@ -36,7 +36,7 @@ def snap(message):
         video=  api.video(url=message.text)
         logger.info("[+] {} has video with id {} ".format(video.info()["author"]["nickname"],video.info()["id"] ))
 
-        bot.send_video(message.chat.id,gg.bytes())
+        bot.send_video(message.chat.id,video.bytes())
         bot.send_message(message.chat.id, "تم تحميل")   
         logger.info("[✔] {} stories downloaded".format(video.info()["author"]["nickname"]))
         
