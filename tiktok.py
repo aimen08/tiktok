@@ -30,15 +30,19 @@ def snap(message):
     if len(request) > 1 :
         bot.send_message(message.chat.id, "الرجاء التأكد من صحة الربط")
         return 
-    
+
+    bot.send_message(message.chat.id, "جاري التحميل يرجى إنتظار")    
+    count=1
     while True:
         try:
-            with TikTokApi() as api:
-                bot.send_message(message.chat.id, "جاري التحميل يرجى إنتظار")       
+            with TikTokApi() as api:  
                 video=  api.video(url=message.text)
-                logger.info("[+] {} has video with id {} ".format(video.info()["author"]["nickname"],video.info()["id"] ))
-
-                bot.send_video(message.chat.id,video.bytes())
+                logger.info("[+] {} has video with id {}, try number : {}".format(video.info()["author"]["nickname"],video.info()["id"],count))
+                link = video.info()["video"]["playAddr"]
+                if ".com/video" in link:
+                    count+=1
+                    continue
+                bot.send_video(message.chat.id,link)
                 bot.send_message(message.chat.id, "تم تحميل")   
                 logger.info("[✔] {} video downloaded".format(video.info()["author"]["nickname"]))
         except:
