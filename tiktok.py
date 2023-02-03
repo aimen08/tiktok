@@ -35,7 +35,7 @@ def snap(message):
     count=1
     while True:
         try:
-            with TikTokApi() as api:  
+            with TikTokApi(custom_verify_fp="verify_ldoj2rk1_tODwkp7b_5p3v_4fNk_Aj5M_kK8IpTznSzUH",use_test_endpoints=True) as api:  
                 video=  api.video(url=message.text)
                 logger.info("[+] {} has video with id {}, try number : {}".format(video.info()["author"]["nickname"],video.info()["id"],count))
                 link = video.info()["video"]["playAddr"]
