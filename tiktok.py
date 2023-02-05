@@ -1,8 +1,10 @@
 import os
 import telebot
-from TikTokApi import TikTokApi
 from dotenv import load_dotenv
 from loguru import logger
+from  urllib.request import urlopen,Request
+from tikTokScraper import *
+
 
 load_dotenv()
 
@@ -22,32 +24,35 @@ def send_mysnap(message):
 def send_mysnap(message):
 	bot.send_message(message.chat.id, "ضع رابط فيديو التيك توك") 
     
+
+
            
 @bot.message_handler()
 def snap(message):
     request = message.text.split()
-    
+    chatId = message.chat.id
     if len(request) > 1 :
-        bot.send_message(message.chat.id, "الرجاء التأكد من صحة الربط")
+        bot.send_message(chatId, "الرجاء التأكد من صحة الرابط")
         return 
 
     bot.send_message(message.chat.id, "جاري التحميل يرجى إنتظار")    
-    count=1
-    while True:
-        try:
-            with TikTokApi(custom_verify_fp="verify_ldoj2rk1_tODwkp7b_5p3v_4fNk_Aj5M_kK8IpTznSzUH",use_test_endpoints=True) as api:  
-                video=  api.video(url=message.text)
-                logger.info("[+] {} has video with id {}, try number : {}".format(video.info()["author"]["nickname"],video.info()["id"],count))
-                link = video.info()["video"]["playAddr"]
-                if ".com/video" in link:
-                    count+=1
-                    continue
-                bot.send_video(message.chat.id,link)
-                bot.send_message(message.chat.id, "تم تحميل")   
-                logger.info("[✔] {} video downloaded".format(video.info()["author"]["nickname"]))
-        except:
-            continue
-        break         
+    logger.info("[+] video with id {} started ".format( extract_video_id_from_url(message.text) ))
+
+    link = getVideo(message.text)
+    bot.send_chat_action(chatId, 'upload_video')
+    req = Request(
+    url=link,
+    headers={'User-Agent': 'Mozilla/5.0'}
+    )
+    data = urlopen(req).read()
+    bot.send_video(chatId,data)
+    bot.send_message(chatId, "تم تحميل")   
+
+
+    logger.info("[✔] {} video downloaded".format(extract_video_id_from_url(message.text)))
+
+  
+            
    
         
 

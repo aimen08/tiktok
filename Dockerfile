@@ -2,9 +2,7 @@ FROM python:3.9
 
 ADD . .
 
-RUN pip install pyTelegramBotAPI python-dotenv pytest-playwright loguru
-RUN python -m playwright install
-RUN python -m playwright install-deps
-RUN pip install TikTokApi-5.2.2.tar.gz
+RUN pip install pyTelegramBotAPI python-dotenv loguru bs4 urllib3
+
 
 CMD [ "python", "./tiktok.py" ]
