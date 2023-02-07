@@ -40,7 +40,6 @@ def getToken(url):
             soup[1].get('name'):soup[1].get('value'),
             soup[2].get('name'):soup[2].get('value')
         }
-        
         return True, cookies, data
     
     except Exception:
@@ -75,39 +74,10 @@ def getVideo(url):
             }
 
             try:
-                response = requests.post('https://musicaldown.com/download', data=data, headers=headers, allow_redirects=False)
-
-                if 'location' in response.headers:
-                    if response.headers['location'] == '/en/?err=url invalid!':
-                        return {
-                            'success': False,
-                            'error': 'invalidUrl'
-                        }
-
-                    elif response.headers['location'] == '/en/?err=Video is private!':
-                        return {
-                            'success': False,
-                            'error': 'privateVideo'
-                        }
-
-                    elif response.headers['location'] == '/mp3/download':
-                        response = requests.post('https://musicaldown.com//mp3/download', data=data, headers=headers)
-                        soup = BeautifulSoup(response.content, 'html.parser')
-
-                        link = soup.findAll('a',attrs={'class':'btn waves-effect waves-light orange download'})[0]['href']
-
-                        return link
-
-                    else:
-                        return {
-                            'success': False,
-                            'error': 'unknownError'
-                        }
-
-                else:                   
-                    soup = BeautifulSoup(response.content, 'html.parser')                   
-                    link = soup.findAll('a',attrs={'class':'btn waves-effect waves-light orange download'})[0]['href']
-                    return link
+                response = requests.post('https://musicaldown.com/download', data=data, headers=headers, allow_redirects=False)              
+                soup = BeautifulSoup(response.content, 'html.parser')                   
+                link = soup.findAll('a',attrs={'class':'btn waves-effect waves-light orange'})[1]['href']
+                return link
 
             except Exception as e:
                 return {
@@ -126,4 +96,3 @@ def getVideo(url):
                     'success': False,
                     'error': 'invalidUrl'
                 }
-

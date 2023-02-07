@@ -40,12 +40,16 @@ def snap(message):
 
     link = getVideo(message.text)
     bot.send_chat_action(chatId, 'upload_video')
-    req = Request(
-    url=link,
-    headers={'User-Agent': 'Mozilla/5.0'}
-    )
-    data = urlopen(req).read()
-    bot.send_video(chatId,data)
+    try:
+         bot.send_video(chatId,link)
+    except:
+        req = Request(
+        url=link,
+        headers={'User-Agent': 'Mozilla/5.0'}
+        )
+        data = urlopen(req).read()
+        bot.send_video(chatId,data)
+   
     bot.send_message(chatId, "تم تحميل")   
 
 
